@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelBinarizer
 
 # Definindo o caminho para as pastas com as imagens das cobras
 base_dir = './animals'
-categories = ['cascavel', 'coral', 'jararaca', 'surucucu']
+categories = ['Cascavel', 'Coral', 'Jararaca', 'Surucucu']
 
 # Carregando as imagens e as etiquetas
 images = []
@@ -22,7 +22,7 @@ for category in categories:
     for img in os.listdir(path):
         img_path = os.path.join(path, img)
         image = cv2.imread(img_path)
-        image = cv2.resize(image, (150, 150))
+        image = cv2.resize(image, (300, 300))
         images.append(image)
         labels.append(category)
 
@@ -39,7 +39,7 @@ labels = lb.fit_transform(labels)
 
 # Criando o modelo
 model = Sequential([
-    Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)),
+    Conv2D(32, (3, 3), activation='relu', input_shape=(300, 300, 3)),
     MaxPooling2D(2, 2),
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(2, 2),
@@ -55,12 +55,12 @@ model = Sequential([
 model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Treinando o modelo
-model.fit(trainX, trainY, validation_data=(testX, testY), batch_size=32, epochs=25, verbose=1)
+model.fit(trainX, trainY, validation_data=(testX, testY), batch_size=32, epochs=10, verbose=1)
 
 # Função para classificar uma imagem
 def classify_snake(image_path):
     image = cv2.imread(image_path)
-    image = cv2.resize(image, (150, 150)).astype('float32') / 255.0
+    image = cv2.resize(image, (300, 300)).astype('float32') / 255.0
     image = np.expand_dims(image, axis=0)
 
     prediction = model.predict(image)
